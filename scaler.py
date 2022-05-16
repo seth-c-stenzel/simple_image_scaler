@@ -37,20 +37,16 @@ def scale_images(path, scale, output_format, save_path, prefix, suffix):
             scaler(path, scale, output_format, save_path, image, prefix, suffix)
 
 def main():
-    config = configparser.ConfigParser()
+    config = configparser.ConfigParser(allow_no_value=True)
     config.read("paths.ini")
 
-    save_path = os.path.abspath(config["DEFAULT"]["savepath"])
     for section in config.sections():
-        path = config[section]["path"]
-        scale = eval(config[section]["scale"])
-        output_format = config[section]["outputformat"]
-        prefix = config[section]["prefix"]
-        if prefix.lower() == "none":
-            prefix = ""
-        suffix = config[section]["suffix"]
-        if suffix.lower() == "none":
-            suffix = ""
+        path = config[section].get("path", "test-images")
+        save_path = os.path.abspath(config[section].get("savepath", "scaled"))
+        scale = eval(config[section].get("scale", 2.0))
+        output_format = config[section].get("outputformat", "original")
+        prefix = config[section].get("prefix", "")
+        suffix = config[section].get("suffix", "")
         scale_images(path, scale, output_format, save_path, prefix, suffix)
 
 
